@@ -7,9 +7,12 @@ import {
   BeforeInsert,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserProfile } from './user-profile.entity';
+import { Roles } from './roles.entity';
 
 @Entity()
 export class User {
@@ -40,6 +43,18 @@ export class User {
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
 
+  @ManyToMany(() => Roles)
+  @JoinTable({
+    name: 'user_role',
+    joinColumn: {
+      name: 'userId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'roleId',
+      referencedColumnName: 'id',
+    },
+  })
   @CreateDateColumn()
   createdAt: Date;
 

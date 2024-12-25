@@ -49,7 +49,7 @@ export class UserProfile {
     onUpdate: 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
-  @ManyToMany(() => UserProfile)
+  @ManyToMany(() => UserProfile, { cascade: true })
   @JoinTable({
     name: 'user_followers',
     joinColumn: {
@@ -63,7 +63,7 @@ export class UserProfile {
   })
   followers: UserProfile[];
 
-  @ManyToMany(() => UserProfile)
+  @ManyToMany(() => UserProfile, { cascade: true })
   @JoinTable({
     name: 'user_following',
     joinColumn: {
@@ -77,7 +77,7 @@ export class UserProfile {
   })
   following: UserProfile[];
 
-  @ManyToMany(() => UserProfile)
+  @ManyToMany(() => UserProfile, { cascade: true })
   @JoinTable({
     name: 'user_blocked',
     joinColumn: {
@@ -91,7 +91,7 @@ export class UserProfile {
   })
   blockedUsers: UserProfile[];
 
-  @ManyToMany(() => UserProfile)
+  @ManyToMany(() => UserProfile, { cascade: true })
   @JoinTable({
     name: 'user_friends_requests',
     joinColumn: {
@@ -105,7 +105,7 @@ export class UserProfile {
   })
   friendRequests: UserProfile[];
 
-  @ManyToMany(() => UserProfile)
+  @ManyToMany(() => UserProfile, { cascade: true })
   @JoinTable({
     name: 'request_send_by_user',
     joinColumn: {
