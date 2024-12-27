@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { ApisEndpoints } from 'src/modules/api-management-module/entities/api-management.entity';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Permissions {
@@ -8,5 +15,13 @@ export class Permissions {
   @Column()
   permission: string;
   @Column()
-  description:string
+  description: string;
+
+  @ManyToMany(() => ApisEndpoints)
+  @JoinTable({
+    name: 'api_permissions',
+    joinColumns: [{ name: 'permission_id', referencedColumnName: 'id' }],
+    inverseJoinColumns: [{ name: 'api_id', referencedColumnName: 'id' }],
+  })
+  apisEndpoints: ApisEndpoints[];
 }

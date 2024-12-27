@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/modules/user-module/entities/user-auth.entity';
-import { UserProfile } from 'src/modules/user-module/entities/user-profile.entity';
 import * as path from 'node:path';
 
 @Module({
@@ -13,8 +11,12 @@ import * as path from 'node:path';
       password: 'postgres',
       username: 'postgres',
       entities: [
+        path.join(
+          __dirname,
+          '../../api-management-module/entities/**/*.entity.{ts,js}',
+        ),
         path.join(__dirname, '../../user-module/entities/**/*.entity.{ts,js}'),
-      ], // Correct glob pattern for entities
+      ],
       database: 'stream-x',
       synchronize: true,
       logging: true,

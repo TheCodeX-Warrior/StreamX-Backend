@@ -11,7 +11,13 @@ import { UserProfileService } from './services/user-profile/user-profile.service
 import { UserSettingService } from './services/user-setting/user-setting.service';
 
 @Module({
-  providers: [PermissionsService, RolesService, UserAuthService, UserProfileService, UserSettingService],
+  providers: [
+    PermissionsService,
+    RolesService,
+    UserAuthService,
+    UserProfileService,
+    UserSettingService,
+  ],
   controllers: [
     UserAuthController,
     UserProfileController,
@@ -20,4 +26,4 @@ import { UserSettingService } from './services/user-setting/user-setting.service
     PermissionsController,
   ],
 })
-export class UserModuleModule {}
+export class UserModule {}

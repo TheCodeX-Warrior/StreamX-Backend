@@ -1,14 +1,20 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModuleModule } from './modules/user-module/user-module.module';
-import { PostModuleModule } from './modules/post-module/post-module.module';
 import { ChatModuleModule } from './modules/chat-module/chat-module.module';
 import { PsqlDbModule } from './modules/database/psql-db/psql-db.module';
 import { MongoDbModule } from './modules/database/mongo-db/mongo-db.module';
+import { UserModule } from './modules/user-module/user.module';
+import { ApiManagementModule } from './modules/api-management-module/api-management.module';
 
 @Module({
-  imports: [UserModuleModule, PostModuleModule, ChatModuleModule, PsqlDbModule, MongoDbModule],
+  imports: [
+    UserModule,
+    ChatModuleModule,
+    PsqlDbModule,
+    MongoDbModule,
+    ApiManagementModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
