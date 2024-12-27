@@ -1,10 +1,13 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   HttpException,
   HttpStatus,
+  InternalServerErrorException,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -23,11 +26,9 @@ export class ApiManagementController {
   async getApiById(@Param('id') id: string): Promise<any> {
     try {
       const apiEndPoint = await this._apiService.getApiByIdService(id);
-
       if (!apiEndPoint) {
         throw new HttpException('API endpoint not found', HttpStatus.NOT_FOUND);
       }
-
       return {
         statusCode: HttpStatus.OK,
         message: 'API endpoint retrieved successfully',
@@ -76,15 +77,36 @@ export class ApiManagementController {
   ): Promise<ApisEndpoints> {
     try {
       return this._apiService.updateApiService(id, api);
-    } catch (error) {}
+    } catch (error: any) {
+      if (error instanceof NotFoundException) {
+        throw error; // API not found
+      } else if (error instanceof BadRequestException) {
+        throw error; // Validation error
+      } else {
+        console.error(error, ':updateApi');
+        throw new InternalServerErrorException(
+          'An unexpected error occurred while updating the API.',
+        );
+      }
+    }
   }
 
   @Patch()
-  async patchApi(
-    @Param('id') id: string,
-    @Body() api: { name?: string; description?: string },
-  ): any {
-    return api;
+  async patchApi(@Param('id') id: string, @Body() api: Partial<CreateApiDto>) {
+    try {
+      return this._apiService.patchApiService(id, api);
+    } catch (error: any) {
+      if (error instanceof NotFoundException) {
+        throw error; // API not found
+      } else if (error instanceof BadRequestException) {
+        throw error; // Validation error
+      } else {
+        console.error(error, ':updateApi');
+        throw new InternalServerErrorException(
+          'An unexpected error occurred while updating the API.',
+        );
+      }
+    }
   }
 
   @Delete(':id')

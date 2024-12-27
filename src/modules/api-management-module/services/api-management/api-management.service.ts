@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApisEndpoints } from '../../entities/api-management.entity';
 import { Repository } from 'typeorm';
@@ -40,19 +45,25 @@ export class ApiManagementService {
 
   async patchApiService(
     id: string,
-    api: ApisEndpoints,
+    api: Partial<CreateApiDto>,
   ): Promise<ApisEndpoints> {
     try {
+      if (Object.keys(api).length <= 0) {
+        throw new BadRequestException('No update data provided');
+      }
+
       const existingApi = await this._endpointRepository.findOne({
         where: { id: id },
       });
       if (!existingApi) {
-        throw new Error(`API with ID ${id} not found`);
+        throw new NotFoundException(`API with ID ${id} not found`);
       }
       return await this._endpointRepository.save({ ...existingApi, ...api });
     } catch (error: any) {
       console.error(error, ':updateApiService ');
-      throw new Error(`Error updating API: ${error.message}`);
+      throw new InternalServerErrorException(
+        `Error updating API: ${error.message}`,
+      );
     }
   }
   async updateApiService(
@@ -64,12 +75,14 @@ export class ApiManagementService {
         where: { id: id },
       });
       if (!existingApi) {
-        throw new Error(`API with ID ${id} not found`);
+        throw new NotFoundException(`API with ID ${id} not found.`);
       }
       return await this._endpointRepository.save({ ...api, id });
     } catch (error: any) {
-      console.error(error, ':updateApiService ');
-      throw new Error(`Error updating API: ${error.message}`);
+      console.error(error, ':updateApiService');
+      throw new InternalServerErrorException(
+        `Error updating API: ${error.message}`,
+      );
     }
   }
 
