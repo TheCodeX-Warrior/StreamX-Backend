@@ -1,13 +1,8 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
-  HttpException,
-  HttpStatus,
-  InternalServerErrorException,
-  NotFoundException,
   Param,
   Patch,
   Post,
@@ -21,44 +16,23 @@ import { CreateApiDto } from '../../dtos/api-management.dto';
 export class ApiManagementController {
   constructor(private readonly _apiService: ApiManagementService) {}
 
-  // Implement API management functionalities here
   @Get(':id')
   async getApiById(@Param('id') id: string): Promise<any> {
     try {
-      const apiEndPoint = await this._apiService.getApiByIdService(id);
-      if (!apiEndPoint) {
-        throw new HttpException('API endpoint not found', HttpStatus.NOT_FOUND);
-      }
-      return {
-        statusCode: HttpStatus.OK,
-        message: 'API endpoint retrieved successfully',
-        data: apiEndPoint,
-      };
+      return await this._apiService.getApiByIdService(id);
     } catch (error: any) {
       console.error('Error in getApiById:', error);
-      // Check if the error is an instance of HttpException
-      if (error instanceof HttpException) {
-        throw error; // rethrow the HttpException to preserve the status code
-      }
-      // Handle unexpected errors
-      throw new HttpException(
-        `Internal Server Error: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw error;
     }
   }
 
   @Get('')
-  async getAllApis(): Promise<string[]> {
+  async getAllApis(): Promise<ApisEndpoints[]> {
     try {
-      const apiEndPoints = await this._apiService.getAllApisService();
-      return apiEndPoints.map((api) => api.name);
+      return await this._apiService.getAllApisService();
     } catch (error: any) {
       console.error('Error in getAllApis:', error);
-      throw new HttpException(
-        `Internal Server Error: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw error;
     }
   }
 
@@ -67,7 +41,12 @@ export class ApiManagementController {
     @Body()
     api: CreateApiDto,
   ): Promise<ApisEndpoints> {
-    return this._apiService.createApiService(api);
+    try {
+      return this._apiService.createApiService(api);
+    } catch (error) {
+      console.error('Error in createApi:', error);
+      throw error;
+    }
   }
 
   @Put(':id')
@@ -78,39 +57,28 @@ export class ApiManagementController {
     try {
       return this._apiService.updateApiService(id, api);
     } catch (error: any) {
-      if (error instanceof NotFoundException) {
-        throw error; // API not found
-      } else if (error instanceof BadRequestException) {
-        throw error; // Validation error
-      } else {
-        console.error(error, ':updateApi');
-        throw new InternalServerErrorException(
-          'An unexpected error occurred while updating the API.',
-        );
-      }
+      console.error('Error in updateApi:', error);
+      throw error;
     }
   }
 
-  @Patch()
+  @Patch(':id')
   async patchApi(@Param('id') id: string, @Body() api: Partial<CreateApiDto>) {
     try {
       return this._apiService.patchApiService(id, api);
     } catch (error: any) {
-      if (error instanceof NotFoundException) {
-        throw error; // API not found
-      } else if (error instanceof BadRequestException) {
-        throw error; // Validation error
-      } else {
-        console.error(error, ':updateApi');
-        throw new InternalServerErrorException(
-          'An unexpected error occurred while updating the API.',
-        );
-      }
+      console.error('Error in patchApi:', error);
+      throw error;
     }
   }
 
   @Delete(':id')
-  async deleteApi(@Param('id') id: string): string {
-    return `API with ID: ${id} deleted`;
+  async deleteApi(@Param('id') id: string): Promise<boolean> {
+    try {
+      return this._apiService.deleteApiService(id);
+    } catch (error) {
+      console.error('Error in deleteApi:', error);
+      throw error;
+    }
   }
 }

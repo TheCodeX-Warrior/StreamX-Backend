@@ -2,11 +2,10 @@ import { ApisEndpoints } from 'src/modules/api-management-module/entities/api-ma
 import {
   Column,
   Entity,
-  JoinTable,
-  ManyToMany,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-
 @Entity()
 export class Permissions {
   @Column()
@@ -17,11 +16,10 @@ export class Permissions {
   @Column()
   description: string;
 
-  @ManyToMany(() => ApisEndpoints)
-  @JoinTable({
-    name: 'api_permissions',
-    joinColumns: [{ name: 'permission_id', referencedColumnName: 'id' }],
-    inverseJoinColumns: [{ name: 'api_id', referencedColumnName: 'id' }],
+  @OneToOne(() => ApisEndpoints)
+  @JoinColumn({
+    name: 'apiEndpointId',
+    referencedColumnName: 'id',
   })
-  apisEndpoints: ApisEndpoints[];
+  apisEndpoint: ApisEndpoints;
 }

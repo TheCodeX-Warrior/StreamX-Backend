@@ -9,8 +9,16 @@ import { RolesService } from './services/roles/roles.service';
 import { UserAuthService } from './services/user-auth/user-auth.service';
 import { UserProfileService } from './services/user-profile/user-profile.service';
 import { UserSettingService } from './services/user-setting/user-setting.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Permissions } from './entities/permissions.entity';
+import { ApisEndpoints } from '../api-management-module/entities/api-management.entity';
+import { ApiManagementModule } from '../api-management-module/api-management.module';
 
 @Module({
+  imports: [
+    TypeOrmModule.forFeature([Permissions, ApisEndpoints]),
+    ApiManagementModule,
+  ],
   providers: [
     PermissionsService,
     RolesService,

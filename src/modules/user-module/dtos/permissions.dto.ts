@@ -10,6 +10,8 @@ export class CreatePermissionDto {
     message: 'Permission Description must be at least 3 characters long',
   })
   description: string; // Define the permission name
+
+  apisEndpoint: any;
 }
 
 export class UpdatePermissionDto {
