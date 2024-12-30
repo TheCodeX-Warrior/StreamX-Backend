@@ -1,29 +1,58 @@
-import { Body, Controller, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Put,
+} from '@nestjs/common';
+import { PermissionsService } from '../../services/permissions/permissions.service';
+import { Permissions } from '../../entities/permissions.entity';
+import { CreatePermissionDto } from '../../dtos/permissions.dto';
 
 @Controller('permissions')
 export class PermissionsController {
+  constructor(private readonly _permissionsService: PermissionsService) {}
+
   @Get(':id')
   getPermissionsById(@Param('id') id: string): any {
-    return { id: id, permissions: ['read', 'write', 'delete'] };
+    try {
+      return this._permissionsService.getPermissionById(id);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Get('')
-  getAllPermissions(): any[] {
-    return null;
+  getAllPermissions(): Promise<Permissions[]> {
+    try {
+      return this._permissionsService.getPermissions();
+    } catch (error) {
+      throw error;
+    }
   }
 
-  @Post('/')
-  createPermission(
-    @Body() permission: { name: string; description: string },
-  ): any {
-    return permission;
+  @Post('')
+  createPermission(@Body() permission: CreatePermissionDto): any {
+    try {
+      return this._permissionsService.createPermission(permission);
+    } catch (error) {
+      throw error;
+    }
   }
 
-  @Put('/')
+  @Put('/:id')
   updatePermission(
-    @Body() permission: { id: string; name: string; description: string },
+    @Param('id') id: string,
+    @Body() permission: Partial<CreatePermissionDto>,
   ): any {
-    return permission;
+    try {
+      return this._permissionsService.updatePermission(id, permission);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Patch('/')
@@ -31,5 +60,14 @@ export class PermissionsController {
     @Body() permission: { id: string; name: string; description: string },
   ): any {
     return permission;
+  }
+
+  @Delete()
+  deletePermission(@Param('id') id: string): any {
+    try {
+      return this._permissionsService.deletePermission(id);
+    } catch (error) {
+      throw error;
+    }
   }
 }

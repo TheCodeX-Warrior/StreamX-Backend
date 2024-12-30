@@ -17,7 +17,7 @@ import { Roles } from './roles.entity';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: string;
 
   @Column({ type: 'varchar', length: 50, nullable: false })
   firstName: string;

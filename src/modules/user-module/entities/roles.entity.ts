@@ -5,7 +5,7 @@ export class Roles {
   @PrimaryGeneratedColumn('uuid') // Generates a UUID as the primary key
   id: string;
 
-  @Column()
+  @Column({ unique: true })
   roleName: string;
 
   @Column()

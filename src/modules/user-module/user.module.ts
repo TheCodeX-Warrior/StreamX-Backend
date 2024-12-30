@@ -13,6 +13,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Permissions } from './entities/permissions.entity';
 import { ApisEndpoints } from '../api-management-module/entities/api-management.entity';
 import { ApiManagementModule } from '../api-management-module/api-management.module';
+import { AuthTokenController } from './controllers/auth-token/auth-token.controller';
+import { AuthTokenService } from './services/auth-token/auth-token.service';
 
 @Module({
   imports: [
@@ -25,6 +27,7 @@ import { ApiManagementModule } from '../api-management-module/api-management.mod
     UserAuthService,
     UserProfileService,
     UserSettingService,
+    AuthTokenService,
   ],
   controllers: [
     UserAuthController,
@@ -32,6 +35,7 @@ import { ApiManagementModule } from '../api-management-module/api-management.mod
     UserSettingController,
     RolesController,
     PermissionsController,
+    AuthTokenController,
   ],
 })
 export class UserModule {}
