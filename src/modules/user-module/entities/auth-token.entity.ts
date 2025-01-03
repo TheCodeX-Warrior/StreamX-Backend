@@ -16,4 +16,7 @@ export class AuthToken {
 
   @Column()
   generatedTimestamp: number;
+
+  @Column()
+  tokenDuration: number;
 }

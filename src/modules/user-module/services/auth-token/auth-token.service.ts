@@ -17,16 +17,28 @@ export class AuthTokenService {
 
   async generateToken(
     payload: any,
-    secretKey: string,
+
     tokenType: string,
     deviceId: string,
+    tokenDuration: number,
   ): Promise<string> {
     try {
+      const currentTimeStamp = Date.now();
       const token = await this.jwtService.signAsync(payload, {
-        secret: secretKey,
+        secret: String(
+          process.env.secretKey + 'tim-' + currentTimeStamp + 'dev-' + deviceId,
+        ),
       });
 
       if (tokenType == TOKEN_TYPE_CONSTANT.REFRESH_TOKEN) {
+        await this._authTokenRepository.create({
+          token,
+          deviceId,
+          userId: payload.userId,
+          generatedTimestamp: currentTimeStamp,
+          tokenDuration,
+        });
+        return token;
       } else if (tokenType == TOKEN_TYPE_CONSTANT.ACCESS_TOKEN) {
         return token;
       }
